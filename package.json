@@ -32,5 +32,9 @@
     "@types/vscode": "^1.125.0",
     "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "openai": "^7.4.0",
+    "simple-git": "^3.36.0"
   }
 }
