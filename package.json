@@ -1,0 +1,17 @@
+{
+  "name": "vscode-commit-message-generator",
+  "version": "1.0.0",
+  "main": "index.js",
+"scripts": {
+  "compile": "tsc -p ./ --noEmit"
+},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "@types/vscode": "^1.125.0",
+    "typescript": "^7.0.2"
+  }
+}
