@@ -1,17 +1,36 @@
 {
   "name": "vscode-commit-message-generator",
+  "displayName": "Commit Message Generator",
   "version": "1.0.0",
-  "main": "index.js",
-"scripts": {
-  "compile": "tsc -p ./ --noEmit"
-},
+  "publisher": "your-publisher-name",
+  "description": "Generate clear, meaningful commit messages from your staged git diff — right inside VS Code.",
+  "main": "./dist/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "activationEvents": [],
+  "contributes": {
+    "commands": [
+      {
+        "command": "commitMessageGenerator.generate",
+        "title": "Generate Commit Message",
+        "category": "Commit Message Generator"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./ --noEmit",
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "vscode:prepublish": "node esbuild.js --production"
+  },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": "",
+  "license": "MIT",
   "devDependencies": {
     "@types/node": "^26.2.0",
     "@types/vscode": "^1.125.0",
+    "esbuild": "^0.28.2",
     "typescript": "^7.0.2"
   }
 }
