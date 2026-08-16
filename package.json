@@ -1,6 +1,6 @@
 {
   "name": "vscode-commit-message-generator",
-  "displayName": "Commit Message Generator",
+  "displayName": "VSCODE AI Commit Message Generator",
   "version": "1.0.0",
   "publisher": "mhocine",
   "description": "Generate clear, meaningful commit messages from your staged git diff — right inside VS Code.",
