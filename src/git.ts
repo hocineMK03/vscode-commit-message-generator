@@ -58,3 +58,11 @@ export async function setSCMInputBox(message: string): Promise<void> {
   }
   repo.inputBox.value = message;
 }
+
+export function sendToTerminal(commitMessage: string): void {
+  const terminal = vscode.window.activeTerminal ?? vscode.window.createTerminal('Commit Message Generator');
+  terminal.show();
+
+  const escaped = commitMessage.replace(/"/g, '\\"');
+  terminal.sendText(`git commit -m "${escaped}"`, false);
+}

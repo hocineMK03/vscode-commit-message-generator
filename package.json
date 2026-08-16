@@ -15,14 +15,41 @@
         "command": "commitMessageGenerator.generate",
         "title": "Generate Commit Message",
         "category": "Commit Message Generator"
+      },
+      {
+        "command": "commitMessageGenerator.setApiKey",
+        "title": "Set Groq API Key",
+        "category": "Commit Message Generator"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Commit Message Generator",
+      "properties": {
+        "commitMessageGenerator.model": {
+          "type": "string",
+          "default": "llama-3.1-8b-instant",
+          "description": "The Groq model to use for generating commit messages."
+        },
+        "commitMessageGenerator.style": {
+          "type": "string",
+          "enum": ["conventional", "short", "detailed"],
+          "default": "conventional",
+          "description": "Commit message style."
+        },
+        "commitMessageGenerator.maxDiffChars": {
+          "type": "number",
+          "default": 12000,
+          "description": "Maximum number of diff characters sent to the model."
+        },
+        "commitMessageGenerator.target": {
+          "type": "string",
+          "enum": ["scmInputBox", "terminal", "both"],
+          "default": "both",
+          "description": "Where to place the generated commit message."
+        }
+      }
+    }
   },
-  "commitMessageGenerator.model": {
-  "type": "string",
-  "default": "llama-3.1-8b-instant",
-  "description": "The Groq model to use for generating commit messages."
-},
   "scripts": {
     "compile": "tsc -p ./ --noEmit",
     "build": "node esbuild.js",

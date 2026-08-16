@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
-import { getStagedInfo, setSCMInputBox } from './git';
 import { generateCommitMessage, CommitStyle } from './groq';
-
+import { getStagedInfo, setSCMInputBox, sendToTerminal } from './git';
 const API_KEY_SECRET = 'commitMessageGenerator.apiKey';
 
 async function getApiKey(context: vscode.ExtensionContext): Promise<string> {
@@ -26,7 +25,7 @@ async function generateCommand(context: vscode.ExtensionContext) {
   const model = config.get<string>('model', 'llama-3.1-8b-instant');
   const style = config.get<CommitStyle>('style', 'conventional');
   const maxDiffChars = config.get<number>('maxDiffChars', 12000);
-
+  const target = config.get<string>('target', 'both');
   await vscode.window.withProgress(
     { location: vscode.ProgressLocation.Notification, title: 'Generating commit message...' },
     async () => {
@@ -34,7 +33,12 @@ async function generateCommand(context: vscode.ExtensionContext) {
         const apiKey = await getApiKey(context);
         const { diff, recentSubjects } = await getStagedInfo(maxDiffChars);
         const message = await generateCommitMessage({ apiKey, model, style, diff, recentSubjects });
-        await setSCMInputBox(message);
+                if (target === 'scmInputBox' || target === 'both') {
+          await setSCMInputBox(message);
+        }
+        if (target === 'terminal' || target === 'both') {
+          sendToTerminal(message);
+        }
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         vscode.window.showErrorMessage(`Commit Message Generator: ${msg}`);
