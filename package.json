@@ -4,6 +4,7 @@
   "version": "1.0.1",
   "publisher": "mhocine",
   "description": "Generate clear, meaningful commit messages from your staged git diff — right inside VS Code.",
+  "icon": "images/icon.png",
   "main": "./dist/extension.js",
 "engines": {
   "vscode": "^1.125.0"
