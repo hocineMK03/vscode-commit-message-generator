@@ -1,7 +1,7 @@
 {
   "name": "vscode-commit-message-generator",
   "displayName": "VSCODE AI Commit Message Generator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "mhocine",
   "description": "Generate clear, meaningful commit messages from your staged git diff — right inside VS Code.",
   "main": "./dist/extension.js",
@@ -23,6 +23,11 @@
       {
         "command": "commitMessageGenerator.setApiKey",
         "title": "Set Groq API Key",
+        "category": "Commit Message Generator"
+      },
+      {
+        "command": "commitMessageGenerator.selectModel",
+        "title": "Select Model",
         "category": "Commit Message Generator"
       }
     ],

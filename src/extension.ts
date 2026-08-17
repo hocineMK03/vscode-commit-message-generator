@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { generateCommitMessage, CommitStyle } from './groq';
+import { generateCommitMessage, listChatModels, CommitStyle } from './groq';
 import { getStagedInfo, setSCMInputBox, sendToTerminal } from './git';
 const API_KEY_SECRET = 'commitMessageGenerator.apiKey';
 
@@ -60,10 +60,63 @@ async function setApiKeyCommand(context: vscode.ExtensionContext) {
   }
 }
 
+async function selectModelCommand(context: vscode.ExtensionContext) {
+  const config = vscode.workspace.getConfiguration('commitMessageGenerator');
+  const current = config.get<string>('model', 'llama-3.1-8b-instant');
+
+  let picked: string | undefined;
+  try {
+    const apiKey = await getApiKey(context);
+    const models = await vscode.window.withProgress(
+      { location: vscode.ProgressLocation.Notification, title: 'Loading Groq models...' },
+      () => listChatModels(apiKey)
+    );
+    const items: vscode.QuickPickItem[] = models.map((id) => ({
+      label: id,
+      description: id === current ? 'current' : undefined,
+    }));
+    items.push({ label: 'Enter a model name manually...', alwaysShow: true });
+
+    const choice = await vscode.window.showQuickPick(items, {
+      title: 'Select Groq Model',
+      placeHolder: `Current: ${current}`,
+      ignoreFocusOut: true,
+    });
+    if (!choice) {
+      return;
+    }
+    picked = choice.label.startsWith('Enter a model name') ? undefined : choice.label;
+    if (!picked) {
+      picked = await promptForModelName(current);
+    }
+  } catch (err) {
+    // No key yet, offline, or a bad key: fall back to typing the name.
+    const msg = err instanceof Error ? err.message : String(err);
+    vscode.window.showWarningMessage(`Could not load the model list (${msg}). Enter a model name instead.`);
+    picked = await promptForModelName(current);
+  }
+
+  if (!picked) {
+    return;
+  }
+  await config.update('model', picked, vscode.ConfigurationTarget.Global);
+  vscode.window.showInformationMessage(`Commit Message Generator: model set to ${picked}.`);
+}
+
+function promptForModelName(current: string): Thenable<string | undefined> {
+  return vscode.window.showInputBox({
+    title: 'Groq Model',
+    prompt: 'Model ID to use for generating commit messages',
+    value: current,
+    ignoreFocusOut: true,
+  });
+}
+
 export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand('commitMessageGenerator.generate', () => generateCommand(context)),
-    vscode.commands.registerCommand('commitMessageGenerator.setApiKey', () => setApiKeyCommand(context))
+    vscode.commands.registerCommand('commitMessageGenerator.setApiKey', () => setApiKeyCommand(context)),
+    vscode.commands.registerCommand('commitMessageGenerator.selectModel', () => selectModelCommand(context))
   );
 }
 
